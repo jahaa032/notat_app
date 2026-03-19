@@ -1,5 +1,12 @@
-CREATE TABLE Notes (
-    Id INTEGER PRIMARY KEY,
+CREATE DATABASE IF NOT EXISTS NotesDB;
+USE NotesDB;
+
+CREATE TABLE IF NOT EXISTS Notes(
+    Id INT PRIMARY KEY AUTO_INCREMENT,
     Tittel VARCHAR(100),
-    Body VARCHAR(50000)
+    Body VARCHAR(1000),
+    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+INSERT INTO Notes (Tittel, Body)
+VALUES ('First note','This is the very first note');

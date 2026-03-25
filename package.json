@@ -1,0 +1,28 @@
+{
+  "name": "notat_app",
+  "version": "1.0.0",
+  "description": "En enkel notatapplikasjon med database (SQL) for å lagre og håndtere notater.",
+  "main": "index.js",
+  "scripts": {
+    "start-server": "node server.js",
+    "start-html": "live-server --port 8080",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jahaa032/notat_app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jahaa032/notat_app/issues"
+  },
+  "homepage": "https://github.com/jahaa032/notat_app#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "mysql": "^2.18.1"
+  }
+}

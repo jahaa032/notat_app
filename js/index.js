@@ -1,38 +1,69 @@
-const notesContainer = document.getElementById('notesContainer');
-const addNoteBtn = document.getElementById('addNoteBtn');
-const searchInput = document.getElementById('searchInput'); // make sure HTML input id is searchInput
+const openModalBtn = document.getElementById("openModalBtn");
+const modal = document.getElementById("modal");
+const closeModalBtn = document.getElementById("closeModalBtn");
+const saveNoteBtn = document.getElementById("saveNoteBtn");
 
-// Fetch all notes
+const tittelInput = document.getElementById("tittelInput");
+const bodyInput = document.getElementById("bodyInput");
+
 function fetchNotes() {
-  fetch('http://localhost:3000/notes')
-    .then(res => res.json())
-    .then(notes => {
-      // Show empty state if no notes
-      const emptyState = document.getElementById('emptyState');
-      emptyState.style.display = notes.length === 0 ? 'block' : 'none';
+  fetch("http://localhost:3000/notes")
+    .then((res) => res.json())
+    .then((data) => {
+      const container = document.getElementById("notesContainer");
+      const emptyState = document.getElementById("emptyState");
 
-      // Render notes
-      notesContainer.innerHTML = notes.map(n => `
+      emptyState.style.display = data.length === 0 ? "block" : "none";
+
+      container.innerHTML = data
+        .map(
+          (note) => `
         <div class="note">
-          <h4>${n.Tittel}</h4>
-          <p>${n.Body}</p>
+          <h3>${note.Tittel}</h3>
+          <p>${note.Body}</p>
+
+          <button data-id="${note.id}" class="deleteBtn">Delete</button>
         </div>
-      `).join('');
+      `,
+        )
+        .join("");
     });
 }
 
-// Add a note
-addNoteBtn.addEventListener('click', () => {
-  const tittel = prompt('Tittel:');
-  const body = prompt('Body:');
-  if (!tittel || !body) return;
-
-  fetch('http://localhost:3000/notes', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ Tittel: tittel, Body: body })
+function deleteNote(id) {
+  fetch(`http://localhost:3000/notes/${id}`, {
+    method: "DELETE",
   }).then(() => fetchNotes());
+}
+
+// Open Model
+openModalBtn.addEventListener("click", () => {
+  modal.classList.remove("hidden");
 });
 
-// Initial load
+//Close Model
+closeModalBtn.addEventListener("click", () => {
+  modal.classList.add("hidden");
+});
+
+saveNoteBtn.addEventListener("click", () => {
+  const tittel = tittelInput.value;
+  const body = bodyInput.value;
+
+  if (!tittel || !body) {
+    alert("Please fill in both fields");
+    return;
+  }
+
+  fetch("http://localhost:3000/notes", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ Tittel: tittel, Body: body }),
+  }).then(() => {
+    modal.classList.add("hidden");
+    tittelInput.value = "";
+    bodyInput.value = "";
+  });
+});
+
 fetchNotes();

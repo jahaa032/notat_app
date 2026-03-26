@@ -13,7 +13,7 @@
         <p>Notes so You Don't Forget</p>
       </header>
     </div>
-
+    <!-- controls for app -->
     <div class="controls">
       <div class="controls-container">
         <input
@@ -30,9 +30,8 @@
             <option value="ideas">Ideas</option>
             <option value="reminders">Reminders</option>
           </select>
-          <button id="addNoteBtn" class="add-btn">
-            <i class="addNote"></i> Legg til
-          </button>
+
+          <button id="openModalBtn" class="add-btn">+ Legg til</button>
         </div>
       </div>
     </div>
@@ -43,6 +42,21 @@
       <i class="fas fa-notes-medical"></i>
       <h3>Ingen Notater</h3>
       <p>Legg til din første notat med å trykke "Legg til" knappen</p>
+    </div>
+
+    <!-- ADD NOTE MODAL -->
+    <div id="modal" class="modal hidden">
+      <div class="modal-content">
+        <h2>New Note</h2>
+
+        <input id="tittelInput" placeholder="Tittel" />
+        <textarea id="bodyInput" placeholder="Body"></textarea>
+
+        <div class="modal-buttons">
+          <button id="saveNoteBtn">Save</button>
+          <button id="closeModalBtn">Cancel</button>
+        </div>
+      </div>
     </div>
     <script src="js/index.js"></script>
   </body>

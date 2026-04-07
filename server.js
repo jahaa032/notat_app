@@ -1,13 +1,18 @@
 const express = require("express");
 const cors = require("cors");
 const sqlite3 = require("sqlite3").verbose();
+const path = require("path");
 
 const app = express();
 const PORT = 3000;
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
+app.use(express.static(path.join(__dirname, "public")));
+
+// Database setup
 const db = new sqlite3.Database("./notes.db", (err) => {
   if (err) {
     console.error("DB connection error:", err);
@@ -15,7 +20,7 @@ const db = new sqlite3.Database("./notes.db", (err) => {
     console.log("Connected to SQLite database");
   }
 });
-
+// Create table
 db.run(`
     CREATE TABLE IF NOT EXISTS Notes (
         Id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -24,7 +29,7 @@ db.run(`
         CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
     )
 `);
-
+// Routes
 app.get("/notes", (req, res) => {
   db.all(
     "SELECT Id as id, Tittel, Body, CreatedAt FROM Notes ORDER BY CreatedAt DESC",
@@ -39,12 +44,13 @@ app.get("/notes", (req, res) => {
 });
 
 app.post("/notes", (req, res) => {
+  console.log("POST /notes received:", req.body);
   const { Tittel, Body } = req.body;
 
   if (!Tittel || !Body) {
     return res.status(400).json({ error: "Missing fields" });
   }
-
+  
   db.run(
     "INSERT INTO Notes (Tittel, Body) VALUES (?, ?)",
     [Tittel, Body],
@@ -73,7 +79,7 @@ app.delete("/notes/:id", (req, res) => {
     res.json({ message: "Note deleted" });
   });
 });
-
+// Start server
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });

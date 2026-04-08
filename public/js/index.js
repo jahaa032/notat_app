@@ -25,15 +25,21 @@ function fetchNotes() {
           <h3>${note.Tittel}</h3>
           <p>${note.Body}</p>
           <button data-id="${note.id}" class="deleteBtn">Delete</button>
+          <button data-id="${note.id}" class="updateBtn">Update</button>
         </div>
       `,
         )
         .join("");
 
-      // 🔥 IMPORTANT: Add delete listeners AFTER rendering
+      //add Delete and Update listeners AFTER rendering
       document.querySelectorAll(".deleteBtn").forEach((btn) => {
         btn.addEventListener("click", () => {
           deleteNote(btn.dataset.id);
+        });
+      });
+      document.querySelectorAll(".updateBtn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          updateNote(btn.dataset.id);
         });
       });
     })
@@ -47,6 +53,33 @@ function deleteNote(id) {
   })
     .then(() => fetchNotes())
     .catch((err) => console.error("Delete error:", err));
+}
+
+function updateNote(id) {
+  const newTittel = prompt("New tittel: ");
+  const newBody = prompt("Ny tekst: ");
+
+  if (newTittel === null || newBody === null) {
+    return;
+  }
+
+  if (newTittel.trim() === "" || newBody.trim() === "") {
+    alert("Dette kan ikke være tomt");
+    return;
+  }
+
+  fetch(`http://localhost:3000/notes/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      Tittel: newTittel,
+      Body: newBody,
+    }),
+  })
+    .then(()=> fetchNotes())
+    .catch((err) => console.error("Update error:", err));
 }
 
 // Open modal

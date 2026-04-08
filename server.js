@@ -79,6 +79,20 @@ app.delete("/notes/:id", (req, res) => {
     res.json({ message: "Note deleted" });
   });
 });
+
+app.put("/notes/:id", (req, res) => {
+  const id = req.params.id;
+  const { Tittel, Body } = req.body;
+
+  db.run("UPDATE Notes SET Tittel = ?, Body = ? WHERE Id = ?", [Tittel, Body, id], function (err) {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    
+    res.json({ message: "Note updated"});
+  });
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);

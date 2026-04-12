@@ -1,113 +1,63 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Noteify</title>
-    <link rel="stylesheet" href="./css/style.css" />
-  </head>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noteify</title>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
 
-  <body>
-    <!-- HEADER -->
-    <header class="header">
+<body>
+  <!-- Main app content -->
+  <main class="app">
+    <!-- Page title and subtitle -->
+    <header class="page-header">
       <h1>Noteify</h1>
-      <p>Notes so You Don't Forget</p>
+      <p>Notes and todos in one place</p>
     </header>
 
-    <!-- CONTROLS -->
-    <div class="controls">
-      <div class="controls-container">
+    <!-- Notes panel -->
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Notes</h2>
+        <button id="openModalBtn" class="btn">Add Note</button>
+      </div>
 
-        <!-- SEARCH (ONLY ONE) -->
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Search Notes..."
-          class="search-input"
-        />
+      <!-- Notes are rendered here by JavaScript -->
+      <div id="notesContainer" class="items-grid"></div>
+    </section>
 
-        <div class="filter-group">
-          <select id="filterSelect" class="filter-select">
-            <option value="all">All Notes</option>
-            <option value="work">Work</option>
-            <option value="personal">Personal</option>
-            <option value="ideas">Ideas</option>
-            <option value="reminders">Reminders</option>
-          </select>
+    <!-- Todos panel -->
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Todos</h2>
+      </div>
 
-          <!-- ONLY ONE BUTTON -->
-          <button id="openModalBtn" class="add-btn">
-            + Add Note
-          </button>
+      <!-- Folder creation controls -->
+      <div class="folder-form">
+        <input id="folderInput" placeholder="New folder (e.g. What I need to do this month)">
+        <button id="addFolderBtn" class="btn btn-accent">Add Folder</button>
+      </div>
 
-        </div>
+      <!-- Todos/folders are rendered here by JavaScript -->
+      <div id="todosContainer" class="items-grid"></div>
+    </section>
+  </main>
+
+  <!-- Note modal (used for both add and update) -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <h3 id="noteModalTitle">Add Note</h3>
+      <input id="tittelInput" placeholder="Title">
+      <textarea id="bodyInput" placeholder="Body"></textarea>
+
+      <div class="modal-actions">
+        <button id="saveNoteBtn" class="btn">Save</button>
+        <button id="closeModalBtn" class="btn btn-secondary">Close</button>
       </div>
     </div>
+  </div>
 
-    <!-- NOTES CONTAINER -->
-    <div id="notesContainer" class="notes-grid"></div>
-
-    <!-- EMPTY STATE -->
-    <div id="emptyState" class="empty-state">
-      <h3>No Notes</h3>
-      <p>Add your first note!</p>
-    </div>
-
-    <!-- MODAL -->
-    <div id="modal" class="modal hidden">
-      <div class="modal-content">
-        <h2>New Note</h2>
-
-        <input id="tittelInput" placeholder="Title" />
-        <textarea id="bodyInput" placeholder="Body"></textarea>
-
-        <div class="modal-buttons">
-          <button id="saveNoteBtn">Save</button>
-          <button id="closeModalBtn">Cancel</button>
-        </div>
-      </div>
-    </div>
-    <!--To Do list-->
-    <header class="header">
-      <h2>ToDoIfy</h2>
-      <p>So you remeber "ToDo" It</p>
-    </header>
-    <!--To Do controls-->
-    <div class="controls">
-      <div class="controls-container">
-        <input
-        type="text"
-        id="todoSearchInput"
-        placeholder="Search Todos..."
-        class="search-input"
-        />
-
-        <button id="openTodoModalBtn" class="add-btn"> + Legg ToDoList</button>
-      </div>
-    </div>
-
-    <!--Todo List-->
-    <div id="todoscontainer" class="notes-grid"></div>
-    <!--EMPTY STATE-->
-    <div id="todoEmptyState" class="empty-state">
-      <h3>Ingen ting som må gjøres :D</h3>
-      <p>Legg til noe å gjøre inne i meg :p</p>
-    </div>
-
-    <!--Legg til Todo Modal-->
-    <div id="todoModal" class="modal hidden">
-      <div class="model-content">
-        <h2>Ny Todo</h2>
-
-        <input id="todoTextInput" placeholder="Hva trenger du å gjøre?" />
-
-        <div class="modal-buttons">
-          <button id="saveTodoBtn">Save</button>
-          <button id="closeTodoBtn">Cancel</button>
-        </div>
-      </div>
-    </div>
-    <!-- JS -->
-    <script src="./js/index.js"></script>
-  </body>
+  <script src="./js/index.js"></script>
+</body>
 </html>

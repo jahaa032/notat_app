@@ -1,251 +1,229 @@
-const express = require("express"); 
-// Express is the framework that lets us build the server and define API routes easily.
-
-const cors = require("cors"); 
-// CORS allows your frontend (browser) to safely communicate with this backend.
-
-const sqlite3 = require("sqlite3").verbose(); 
-// SQLite database driver. ".verbose()" gives more detailed error messages for debugging.
-
-const path = require("path"); 
-// Helps us safely work with file and folder paths across different operating systems.
+const express = require("express");
+const cors = require("cors");
+const sqlite3 = require("sqlite3").verbose();
+const path = require("path");
 
 const app = express();
 const PORT = 3000;
 
-// ----------------------
-// MIDDLEWARE
-// ----------------------
-
+// lets frontend talk to backend
 app.use(cors());
-// Enables cross-origin requests (frontend can talk to backend even if ports differ).
 
+// lets server read JSON data from frontend
 app.use(express.json());
-// Allows the server to read JSON data sent in request bodies (important for POST/PUT).
 
+// serves your HTML, CSS, JS files
 app.use(express.static(path.join(__dirname, "public")));
-// Serves static frontend files (HTML, CSS, JS) from the "public" folder.
 
-// ----------------------
-// DATABASE SETUP
-// ----------------------
+// connect to sqlite database file
+const db = new sqlite3.Database("./notes.db");
 
-const db = new sqlite3.Database("./notes.db", (err) => {
-  // Opens (or creates) the SQLite database file.
-
-  if (err) {
-    console.error("DB connection error:", err);
-    // Logs database connection issues if something goes wrong.
-  } else {
-    console.log("Connected to SQLite database");
-    // Confirms successful connection.
-  }
-});
-
-// Create the Notes table if it doesn't already exist
-db.run(`
+// create tables if they don’t exist yet
+db.serialize(() => {
+  // Notes table
+  db.run(`
     CREATE TABLE IF NOT EXISTS Notes (
-        Id INTEGER PRIMARY KEY AUTOINCREMENT, 
-        -- Unique ID for each note, automatically increases
-
-        Tittel TEXT,
-        -- Title of the note
-
-        Body TEXT,
-        -- Main content of the note
-
-        Done INTEGER DEFAULT 0,
-        -- Used for future todo feature (0 = not done, 1 = done)
-
-        CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
-        -- Automatically stores when the note was created
+      Id INTEGER PRIMARY KEY AUTOINCREMENT,
+      Tittel TEXT,
+      Body TEXT,
+      CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
     )
-`);
+  `);
 
-// ----------------------
-// ROUTES (API ENDPOINTS)
-// ----------------------
+  // Folder table for grouping todos
+  db.run(`
+    CREATE TABLE IF NOT EXISTS TodoFolders (
+      Id INTEGER PRIMARY KEY AUTOINCREMENT,
+      Name TEXT NOT NULL UNIQUE,
+      CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
 
-// GET all notes
-app.get("/notes", (req, res) => {
-  // Fetches all notes from the database
+  // Todos table (optional link to folder)
+  db.run(`
+    CREATE TABLE IF NOT EXISTS Todos (
+      Id INTEGER PRIMARY KEY AUTOINCREMENT,
+      Text TEXT,
+      Done INTEGER DEFAULT 0,
+      FolderId INTEGER,
+      FOREIGN KEY (FolderId) REFERENCES TodoFolders(Id) ON DELETE SET NULL
+    )
+  `);
 
-  db.all(
-    "SELECT Id as id, Tittel, Body, CreatedAt FROM Notes ORDER BY CreatedAt DESC",
-    [],
-    (err, rows) => {
+  // Migration: add FolderId if this is an older database
+  db.all("PRAGMA table_info(Todos)", [], (err, columns) => {
+    if (err) return;
 
-      if (err) {
-        return res.status(500).json({ error: err.message });
-        // Sends server error if database query fails
-      }
+    const hasFolderId = columns.some((column) => column.name === "FolderId");
 
-      res.json(rows);
-      // Sends notes data to the frontend as JSON
+    if (!hasFolderId) {
+      db.run("ALTER TABLE Todos ADD COLUMN FolderId INTEGER", () => {});
     }
-  );
+  });
 });
 
-// CREATE a new note
-app.post("/notes", (req, res) => {
-  console.log("POST /notes received:", req.body);
-  // Logs incoming data for debugging
 
+// ---------------- NOTES ----------------
+
+// get all notes
+app.get("/notes", (req, res) => {
+  db.all("SELECT * FROM Notes ORDER BY Id DESC", [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
+// create note
+app.post("/notes", (req, res) => {
   const { Tittel, Body } = req.body;
 
   if (!Tittel || !Body) {
     return res.status(400).json({ error: "Missing fields" });
-    // Prevents saving empty notes
   }
 
   db.run(
     "INSERT INTO Notes (Tittel, Body) VALUES (?, ?)",
     [Tittel, Body],
     function (err) {
+      if (err) return res.status(500).json({ error: err.message });
 
-      if (err) {
-        return res.status(500).json({ error: err.message });
-        // Handles database insert errors
-      }
-
-      res.json({
-        id: this.lastID,
-        // ID of newly created note
-
-        Tittel,
-        Body,
-      });
+      res.json({ id: this.lastID, Tittel, Body });
     }
   );
 });
 
-// DELETE a note
+// delete note
 app.delete("/notes/:id", (req, res) => {
-  const id = req.params.id;
-  // Gets the note ID from the URL
-
-  db.run("DELETE FROM Notes WHERE Id = ?", [id], function (err) {
-
-    if (err) {
-      return res.status(500).json({ error: err.message });
-      // Handles delete errors
-    }
-
+  db.run("DELETE FROM Notes WHERE Id = ?", [req.params.id], (err) => {
+    if (err) return res.status(500).json({ error: err.message });
     res.json({ message: "Note deleted" });
-    // Confirms successful deletion
   });
 });
 
-// UPDATE a note
+// update note
 app.put("/notes/:id", (req, res) => {
-  const id = req.params.id;
   const { Tittel, Body } = req.body;
-  // New updated values sent from frontend
 
   db.run(
     "UPDATE Notes SET Tittel = ?, Body = ? WHERE Id = ?",
-    [Tittel, Body, id],
-    function (err) {
-
-      if (err) {
-        return res.status(500).json({ error: err.message });
-        // Handles update errors
-      }
-
+    [Tittel, Body, req.params.id],
+    (err) => {
+      if (err) return res.status(500).json({ error: err.message });
       res.json({ message: "Note updated" });
-      // Confirms update success
     }
   );
 });
 
-app.get("/todos", (req, res) => {
-  // Fetches all notes from the database
 
-  db.all(
-    "SELECT Id as id, Text, Done, CreatedAt FROM Notes ORDER BY CreatedAt DESC",
-    [],
-    (err, rows) => {
+// ---------------- TODOS ----------------
 
-      if (err) {
-        return res.status(500).json({ error: err.message });
-        // Sends server error if database query fails
-      }
-
-      res.json(rows);
-      // Sends notes data to the frontend as JSON
-    }
-  );
-});
-
-// CREATE a new note
-app.post("/todos", (req, res) => {
-  console.log("POST /todos received:", req.body);
-  // Logs incoming data for debugging
-
-  const { Text, Done } = req.body;
-
-  if (!Text || !Done) {
-    return res.status(400).json({ error: "Missing fields" });
-    // Prevents saving empty notes
-  }
-
-  db.run(
-    "INSERT INTO Todos (Text, Done) VALUES (?, ?)",
-    [Text, Done],
-    function (err) {
-
-      if (err) {
-        return res.status(500).json({ error: err.message });
-        // Handles database insert errors
-      }
-
-      res.json({
-        id: this.lastID,
-        // ID of newly created note
-
-        Text,
-        Done,
-      });
-    }
-  );
-});
-
-// DELETE a note
-app.delete("/todos/:id", (req, res) => {
-  const id = req.params.id;
-  // Gets the note ID from the URL
-
-  db.run("DELETE FROM Todos WHERE Id = ?", [id], function (err) {
-
-    if (err) {
-      return res.status(500).json({ error: err.message });
-      // Handles delete errors
-    }
-
-    res.json({ message: "Todo Note deleted" });
-    // Confirms successful deletion
+// get folders (A-Z)
+app.get("/folders", (req, res) => {
+  db.all("SELECT * FROM TodoFolders ORDER BY Name ASC", [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
   });
 });
 
-// UPDATE a Todo Note
-app.put("/todos/:id/toggle", (req, res) => {
-  const id = req.params.id;
+// create folder
+app.post("/folders", (req, res) => {
+  const folderName = req.body.Name?.trim();
+
+  if (!folderName) {
+    return res.status(400).json({ error: "Missing folder name" });
+  }
 
   db.run(
-    "UPDATE Todos SET Done = NOT Done WHERE Id = ?",
-    [id],
+    "INSERT INTO TodoFolders (Name) VALUES (?)",
+    [folderName],
+    function (err) {
+      if (err) {
+        if (err.message.includes("UNIQUE")) {
+          return res.status(400).json({ error: "Folder already exists" });
+        }
+
+        return res.status(500).json({ error: err.message });
+      }
+
+      res.json({ id: this.lastID, Name: folderName });
+    }
+  );
+});
+
+// get todos with folder name
+app.get("/todos", (req, res) => {
+  db.all(
+    `
+    SELECT
+      Todos.*,
+      TodoFolders.Name AS FolderName
+    FROM Todos
+    LEFT JOIN TodoFolders ON TodoFolders.Id = Todos.FolderId
+    ORDER BY Todos.Id DESC
+    `,
+    [],
+    (err, rows) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json(rows);
+    }
+  );
+});
+
+// create todo (inside folder or unsorted)
+app.post("/todos", (req, res) => {
+  const text = req.body.Text?.trim();
+  const folderId = req.body.FolderId || null;
+
+  if (!text) {
+    return res.status(400).json({ error: "Missing text" });
+  }
+
+  db.run(
+    "INSERT INTO Todos (Text, FolderId) VALUES (?, ?)",
+    [text, folderId],
     function (err) {
       if (err) return res.status(500).json({ error: err.message });
 
+      res.json({ id: this.lastID, Text: text, Done: 0, FolderId: folderId });
+    }
+  );
+});
+
+// move todo to another folder
+app.put("/todos/:id/folder", (req, res) => {
+  const folderId = req.body.FolderId || null;
+
+  db.run(
+    "UPDATE Todos SET FolderId = ? WHERE Id = ?",
+    [folderId, req.params.id],
+    (err) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ message: "Todo folder updated" });
+    }
+  );
+});
+
+// delete todo
+app.delete("/todos/:id", (req, res) => {
+  db.run("DELETE FROM Todos WHERE Id = ?", [req.params.id], (err) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ message: "Todo deleted" });
+  });
+});
+
+// toggle done(button)
+app.put("/todos/:id/toggle", (req, res) => {
+  db.run(
+    "UPDATE Todos SET Done = NOT Done WHERE Id = ?",
+    [req.params.id],
+    (err) => {
+      if (err) return res.status(500).json({ error: err.message });
       res.json({ message: "Toggled" });
     }
   );
 });
-// ----------------------
-// START SERVER
-// ----------------------
 
+// start server
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-  // Starts backend server so frontend can connect to it
+  console.log("Server running on http://localhost:" + PORT);
 });

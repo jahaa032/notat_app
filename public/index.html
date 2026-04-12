@@ -3,25 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NoteIfy</title>
-    <link rel="stylesheet" href="./css/style.css"/>
+    <title>Noteify</title>
+    <link rel="stylesheet" href="./css/style.css" />
   </head>
+
   <body>
-    <div class="container">
-      <header class="header">
-        <h1>Noteify</h1>
-        <p>Notes so You Don't Forget</p>
-      </header>
-    </div>
-    <!-- controls for app -->
+    <!-- HEADER -->
+    <header class="header">
+      <h1>Noteify</h1>
+      <p>Notes so You Don't Forget</p>
+    </header>
+
+    <!-- CONTROLS -->
     <div class="controls">
       <div class="controls-container">
+
+        <!-- SEARCH (ONLY ONE) -->
         <input
           type="text"
           id="searchInput"
-          placeholder="Search Notes ..."
+          placeholder="Search Notes..."
           class="search-input"
         />
+
         <div class="filter-group">
           <select id="filterSelect" class="filter-select">
             <option value="all">All Notes</option>
@@ -31,25 +35,30 @@
             <option value="reminders">Reminders</option>
           </select>
 
-          <button id="openModalBtn" class="add-btn">+ Legg til notat</button>
+          <!-- ONLY ONE BUTTON -->
+          <button id="openModalBtn" class="add-btn">
+            + Add Note
+          </button>
+
         </div>
       </div>
     </div>
-    <div id="notesContainer" class="notes-grid">
-      <!--Noter skal bli lagt til her-->
-    </div>
+
+    <!-- NOTES CONTAINER -->
+    <div id="notesContainer" class="notes-grid"></div>
+
+    <!-- EMPTY STATE -->
     <div id="emptyState" class="empty-state">
-      <i class="fas fa-notes-medical"></i>
-      <h3>Ingen Notater</h3>
-      <p>Legg til din første notat med å trykke "Legg til" knappen</p>
+      <h3>No Notes</h3>
+      <p>Add your first note!</p>
     </div>
 
-    <!-- ADD NOTE MODAL -->
+    <!-- MODAL -->
     <div id="modal" class="modal hidden">
       <div class="modal-content">
         <h2>New Note</h2>
 
-        <input id="tittelInput" placeholder="Tittel" />
+        <input id="tittelInput" placeholder="Title" />
         <textarea id="bodyInput" placeholder="Body"></textarea>
 
         <div class="modal-buttons">
@@ -58,25 +67,47 @@
         </div>
       </div>
     </div>
-    <div class="container">
-      <header class="header">
-        <h1>ToDoify</h1>
-        <h2>So you remember what to do at any time!</h2>
-      </header>
-    </div>
-    <div class="control">
+    <!--To Do list-->
+    <header class="header">
+      <h2>ToDoIfy</h2>
+      <p>So you remeber "ToDo" It</p>
+    </header>
+    <!--To Do controls-->
+    <div class="controls">
       <div class="controls-container">
         <input
-          type="text"
-          id="searchInput"
-          placeholder="Search Notes ..."
-          class="search-input"
+        type="text"
+        id="todoSearchInput"
+        placeholder="Search Todos..."
+        class="search-input"
         />
-        <div class="filter-group">
-          <button id="openModalBtn" class="add-btn">+ Legg til todo</button>
+
+        <button id="openTodoModalBtn" class="add-btn"> + Legg ToDoList</button>
+      </div>
+    </div>
+
+    <!--Todo List-->
+    <div id="todoscontainer" class="notes-grid"></div>
+    <!--EMPTY STATE-->
+    <div id="todoEmptyState" class="empty-state">
+      <h3>Ingen ting som må gjøres :D</h3>
+      <p>Legg til noe å gjøre inne i meg :p</p>
+    </div>
+
+    <!--Legg til Todo Modal-->
+    <div id="todoModal" class="modal hidden">
+      <div class="model-content">
+        <h2>Ny Todo</h2>
+
+        <input id="todoTextInput" placeholder="Hva trenger du å gjøre?" />
+
+        <div class="modal-buttons">
+          <button id="saveTodoBtn">Save</button>
+          <button id="closeTodoBtn">Cancel</button>
         </div>
       </div>
     </div>
+    <!-- JS -->
     <script src="./js/index.js"></script>
   </body>
 </html>

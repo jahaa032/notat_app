@@ -82,6 +82,26 @@ function updateNote(id) {
     .catch((err) => console.error("Update error:", err));
 }
 
+function fetchTodos() {
+  fetch("http://localhost:3000/todos")
+   .then(res => res.json())
+   .then(data => {
+    const container = document.getElementById("todosContainer");
+
+    container.innerHTML = data.map(todo => `
+      <div class="todo">
+        <p style="text-decoration: ${todo.Done ? "line-through": "none"}">
+          ${todo.Text}
+        </p>
+
+        <button data-id="${todo.id}" class="deleteBtn"> Delete </button>
+        <button data-id="${todo.id}" class="toggleBtn">✔</button>
+      </div>
+      `).join("");
+      // attach listners
+   });
+}
+
 // Open modal
 openModalBtn.addEventListener("click", () => {
   modal.classList.remove("hidden");

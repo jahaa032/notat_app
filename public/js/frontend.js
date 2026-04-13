@@ -191,9 +191,7 @@ function fetchTodos() {
           <div class="items-grid">
             ${folderTodos.length > 0 ? folderTodos.map((todo) => `
               <div class="todo">
-                <p class="item-body ${todo.Done ? "done" : ""}">
-                  ${todo.Text}
-                </p>
+                <p class="item-body ${todo.Done ? "done" : ""}">${todo.Text}</p>
 
                 <div class="item-actions">
                   <button class="deleteTodoBtn btn btn-danger" data-id="${todo.Id}">Delete</button>

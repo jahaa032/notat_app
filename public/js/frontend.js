@@ -18,6 +18,12 @@ let notes = [];
 let editingNoteId = null;
 let editingNoteData = null;
 
+const API_BASE = "";
+
+function apiUrl(path) {
+  return `${API_BASE}${path}`;
+}
+
 // Shared fetch helper with basic error handling
 async function request(url, options) {
   const response = await fetch(url, options);
@@ -75,7 +81,7 @@ function openEditNoteModal(note) {
 // load notes from backend and show them on page
 function fetchNotes() {
   // Load all notes from backend
-  request("http://localhost:3000/notes")
+  request(apiUrl("/notes"))
     .then(res => res.json())
     .then(data => {
       notes = data;
@@ -108,7 +114,7 @@ function fetchNotes() {
 
 // delete note
 function deleteNote(id) {
-  request(`http://localhost:3000/notes/${id}`, {
+  request(apiUrl(`/notes/${id}`), {
     method: "DELETE"
   })
     .then(fetchNotes)
@@ -132,7 +138,7 @@ function updateNote(id) {
 
 function fetchFolders() {
   // Load folder list used to group todos
-  return request("http://localhost:3000/folders")
+  return request(apiUrl("/folders"))
     .then((res) => res.json())
     .then((data) => {
       folders = data;
@@ -149,7 +155,7 @@ function addFolder() {
     return;
   }
 
-  request("http://localhost:3000/folders", {
+  request(apiUrl("/folders"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ Name: name })
@@ -165,7 +171,7 @@ function addFolder() {
 // load todos
 function fetchTodos() {
   // Load todos and render them under each folder
-  request("http://localhost:3000/todos")
+  request(apiUrl("/todos"))
     .then(res => res.json())
     .then(data => {
       // Build HTML for each folder block
@@ -269,7 +275,7 @@ function addTodoToFolder(folderId, text) {
     return;
   }
 
-  request("http://localhost:3000/todos", {
+  request(apiUrl("/todos"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ Text: trimmedText, FolderId: folderId })
@@ -283,7 +289,7 @@ function addTodoToFolder(folderId, text) {
 // delete todo
 function deleteTodo(id) {
   // Remove one todo
-  request(`http://localhost:3000/todos/${id}`, {
+  request(apiUrl(`/todos/${id}`), {
     method: "DELETE"
   })
     .then(fetchTodos)
@@ -293,7 +299,7 @@ function deleteTodo(id) {
 // toggle todo done/not done
 function toggleTodo(id) {
   // Toggle done status for one todo
-  request(`http://localhost:3000/todos/${id}/toggle`, {
+  request(apiUrl(`/todos/${id}/toggle`), {
     method: "PUT"
   })
     .then(fetchTodos)
@@ -329,8 +335,8 @@ saveNoteBtn.addEventListener("click", () => {
 
   const method = editingNoteId ? "PUT" : "POST";
   const url = editingNoteId
-    ? `http://localhost:3000/notes/${editingNoteId}`
-    : "http://localhost:3000/notes";
+    ? apiUrl(`/notes/${editingNoteId}`)
+    : apiUrl("/notes");
 
   request(url, {
     method,

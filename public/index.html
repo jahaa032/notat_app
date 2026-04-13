@@ -13,14 +13,14 @@
     <!-- Page title and subtitle -->
     <header class="page-header">
       <h1>Noteify</h1>
-      <p>Notes and todos in one place</p>
+      <p>Notes and todos in Perfect Harmony</p>
     </header>
 
     <!-- Notes panel -->
     <section class="panel">
       <div class="panel-header">
         <h2>Notes</h2>
-        <button id="openModalBtn" class="btn">Add Note</button>
+        <button id="openModalBtn" class="btn">Legg til ny Notat</button>
       </div>
 
       <!-- Notes are rendered here by JavaScript -->
@@ -35,8 +35,8 @@
 
       <!-- Folder creation controls -->
       <div class="folder-form">
-        <input id="folderInput" placeholder="New folder (e.g. What I need to do this month)">
-        <button id="addFolderBtn" class="btn btn-accent">Add Folder</button>
+        <input id="folderInput" placeholder="Ny mappe (eksempel: Kjøpe liste)">
+        <button id="addFolderBtn" class="btn btn-accent">Legg til ny mappe</button>
       </div>
 
       <!-- Todos/folders are rendered here by JavaScript -->
@@ -47,10 +47,9 @@
   <!-- Note modal (used for both add and update) -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
-      <h3 id="noteModalTitle">Add Note</h3>
+      <h3 id="noteModalTitle">Legg til Notat</h3>
       <input id="tittelInput" placeholder="Title">
       <textarea id="bodyInput" placeholder="Body"></textarea>
-
       <div class="modal-actions">
         <button id="saveNoteBtn" class="btn">Save</button>
         <button id="closeModalBtn" class="btn btn-secondary">Close</button>

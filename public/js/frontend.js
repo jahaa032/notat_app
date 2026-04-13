@@ -151,7 +151,7 @@ function addFolder() {
   const name = folderInput.value.trim();
 
   if (!name) {
-    alert("Please enter a folder name.");
+    alert("Legg til en mappenavn først");
     return;
   }
 
@@ -183,10 +183,11 @@ function fetchTodos() {
           <div class="folder-row">
             <h3 class="folder-title">${folder.Name}</h3>
             <div class="folder-add-row">
-              <input class="folderTodoInput" data-folder-id="${folder.Id}" placeholder="Add todo to ${folder.Name}">
-              <button class="addFolderTodoBtn btn" data-folder-id="${folder.Id}">Add Todo</button>
+              <input class="folderTodoInput" data-folder-id="${folder.Id}" placeholder="Legg til todo to ${folder.Name}">
+              <button class="addFolderTodoBtn btn" data-folder-id="${folder.Id}">Legg til todo</button>
             </div>
           </div>
+
 
           <div class="items-grid">
             ${folderTodos.length > 0 ? folderTodos.map((todo) => `
@@ -195,10 +196,10 @@ function fetchTodos() {
 
                 <div class="item-actions">
                   <button class="deleteTodoBtn btn btn-danger" data-id="${todo.Id}">Delete</button>
-                  <button class="toggleTodoBtn btn" data-id="${todo.Id}">Toggle done</button>
+                  <button class="toggleTodoBtn btn" data-id="${todo.Id}">Toggle Ferdig</button>
                 </div>
               </div>
-            `).join("") : '<p class="empty-text">No todos in this folder.</p>'}
+            `).join("") : '<p class="empty-text">Ingen todos inn i denne mappen</p>'}
           </div>
         </div>
         `;
@@ -216,7 +217,7 @@ function fetchTodos() {
                   <p class="item-body ${todo.Done ? "done" : ""}">${todo.Text}</p>
                   <div class="item-actions">
                     <button class="deleteTodoBtn btn btn-danger" data-id="${todo.Id}">Delete</button>
-                    <button class="toggleTodoBtn btn" data-id="${todo.Id}">Toggle done</button>
+                    <button class="toggleTodoBtn btn" data-id="${todo.Id}">Toggle Ferdig</button>
                   </div>
                 </div>
               `).join("")}

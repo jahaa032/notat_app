@@ -150,6 +150,25 @@ app.post("/folders", (req, res) => {
   );
 });
 
+// delete folder and all todos in that folder
+app.delete("/folders/:id", (req, res) => {
+  const folderId = req.params.id;
+
+  db.run("DELETE FROM Todos WHERE FolderId = ?", [folderId], (todosErr) => {
+    if (todosErr) return res.status(500).json({ error: todosErr.message });
+
+    db.run("DELETE FROM TodoFolders WHERE Id = ?", [folderId], function (deleteErr) {
+      if (deleteErr) return res.status(500).json({ error: deleteErr.message });
+
+      if (this.changes === 0) {
+        return res.status(404).json({ error: "Folder not found" });
+      }
+
+      res.json({ message: "Folder deleted" });
+    });
+  });
+});
+
 // get todos with folder name
 app.get("/todos", (req, res) => {
   db.all(
@@ -168,6 +187,7 @@ app.get("/todos", (req, res) => {
     }
   );
 });
+
 
 // create todo (inside folder or unsorted)
 app.post("/todos", (req, res) => {

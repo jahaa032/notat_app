@@ -181,7 +181,10 @@ function fetchTodos() {
         return `
         <div class="todo-folder-group">
           <div class="folder-row">
-            <h3 class="folder-title">${folder.Name}</h3>
+            <div class="folder-top">
+              <h3 class="folder-title">${folder.Name}</h3>
+              <button class="deleteFolderBtn btn btn-danger" data-id="${folder.Id}">Slett mappe</button>
+            </div>
             <div class="folder-add-row">
               <input class="folderTodoInput" data-folder-id="${folder.Id}" placeholder="Legg til todo to ${folder.Name}">
               <button class="addFolderTodoBtn btn" data-folder-id="${folder.Id}">Legg til todo</button>
@@ -243,6 +246,10 @@ function fetchTodos() {
         btn.addEventListener("click", () => toggleTodo(btn.dataset.id));
       });
 
+      document.querySelectorAll(".deleteFolderBtn").forEach((btn) => {
+        btn.addEventListener("click", () => deleteFolder(btn.dataset.id));
+      });
+
       // Add todo inside a specific folder
       document.querySelectorAll(".addFolderTodoBtn").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -282,6 +289,16 @@ function addTodoToFolder(folderId, text) {
     .then(() => {
       fetchTodos();
     })
+    .catch(err => alert(err.message));
+}
+
+function deleteFolder(id) {
+  // Remove one folder and keep existing todos as unsorted
+  request(apiUrl(`/folders/${id}`), {
+    method: "DELETE"
+  })
+    .then(() => fetchFolders())
+    .then(() => fetchTodos())
     .catch(err => alert(err.message));
 }
 

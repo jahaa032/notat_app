@@ -6,6 +6,8 @@
   "scripts": {
     "start-server": "node backend.js",
     "dev": "nodemon backend.js",
+    "db:open": "sqlite3 notes.db",
+    "db:tables": "sqlite3 -header -column notes.db \".tables\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

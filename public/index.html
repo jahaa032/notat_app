@@ -17,30 +17,50 @@
     </header>
 
     <!-- Notes panel -->
-    <section class="panel">
+    <section class="panel panel-notes">
       <div class="panel-header">
         <h2>Notes</h2>
-        <button id="openModalBtn" class="btn">Legg til ny Notat</button>
       </div>
 
-      <!-- Notes are rendered here by JavaScript -->
-      <div id="notesContainer" class="items-grid"></div>
+      <div class="composer-box composer-box-notes">
+        <div>
+          <p class="composer-label">Add</p>
+          <h3>Add a note</h3>
+          <p class="composer-text"></p>
+        </div>
+        <button id="openModalBtn" class="btn">Add note</button>
+      </div>
+
+      <div class="content-box content-box-notes">
+        <!-- Notes are rendered here by JavaScript -->
+        <div id="notesContainer" class="items-grid"></div>
+      </div>
     </section>
 
     <!-- Todos panel -->
-    <section class="panel">
+    <section class="panel panel-todos">
       <div class="panel-header">
         <h2>Todos</h2>
       </div>
 
-      <!-- Folder creation controls -->
-      <div class="folder-form">
-        <input id="folderInput" placeholder="Ny mappe (eksempel: Kjøpe liste)">
-        <button id="addFolderBtn" class="btn btn-accent">Legg til ny mappe</button>
+      <div class="composer-box composer-box-todos">
+        <div>
+          <p class="composer-label">Add</p>
+          <h3>Create a todo folder</h3>
+          <p class="composer-text"></p>
+        </div>
+
+        <!-- Folder creation controls -->
+        <div class="folder-form">
+          <input id="folderInput" placeholder="Ny Todo mappe">
+          <button id="addFolderBtn" class="btn btn-accent">Legg til mappe</button>
+        </div>
       </div>
 
-      <!-- Todos/folders are rendered here by JavaScript -->
-      <div id="todosContainer" class="items-grid"></div>
+      <div class="content-box content-box-todos">
+        <!-- Todos/folders are rendered here by JavaScript -->
+        <div id="todosContainer" class="items-grid"></div>
+      </div>
     </section>
   </main>
 

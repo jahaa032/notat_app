@@ -69,8 +69,8 @@ function openEditNoteModal(note) {
   // Open modal in update mode using placeholder ghost text
   editingNoteId = note.Id;
   editingNoteData = note;
-  noteModalTitle.textContent = "Update Note";
-  saveNoteBtn.textContent = "Update";
+  noteModalTitle.textContent = "Edit Note";
+  saveNoteBtn.textContent = "Edit";
   tittelInput.value = "";
   bodyInput.value = "";
   tittelInput.placeholder = note.Tittel || "Title";
@@ -94,7 +94,7 @@ function fetchNotes() {
 
           <div class="item-actions">
             <button data-id="${note.Id}" class="deleteNoteBtn btn btn-danger">Delete</button>
-            <button data-id="${note.Id}" class="updateNoteBtn btn btn-secondary">Update</button>
+            <button data-id="${note.Id}" class="updateNoteBtn btn btn-secondary">Edit</button>
           </div>
         </div>
       `).join("");

@@ -147,3 +147,5 @@ Tabeller som opprettes:
 - Søk/filter for notater
 - Enhetstester for API
 - Deploy (for eksempel Render eller Railway)
+
+Css er lager med bruk av AI

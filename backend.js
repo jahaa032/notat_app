@@ -84,7 +84,7 @@ app.post("/notes", (req, res) => {
   db.run(
     "INSERT INTO Notes (Tittel, Body) VALUES (?, ?)",
     [Tittel, Body],
-    (err) => {
+    function (err) {
       if (err) return res.status(500).json({ error: err.message });
 
       res.json({ id: this.lastID, Tittel, Body });

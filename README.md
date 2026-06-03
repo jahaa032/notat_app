@@ -70,6 +70,31 @@ Serveren kjører på `http://localhost:3000`.
 
 ---
 
+## Kort brukerveiledning på Windows
+
+Hvis du får feil i PowerShell, kan du bruke denne raske sjekklisten:
+
+1. Åpne prosjektmappen i terminalen.
+2. Kjør `npm install` for å installere avhengigheter.
+3. Start appen med `npm run dev`.
+4. Hvis PowerShell blokkerer npm, kjør:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+5. Hvis du får feil med `sqlite3`, slett og installer på nytt:
+
+```powershell
+Remove-Item -Recurse -Force node_modules
+Remove-Item -Force package-lock.json
+npm install
+```
+
+6. Hvis Node-versjonen er for ny for `sqlite3`, bruk en LTS-versjon av Node.js, for eksempel 20 eller 22.
+
+---
+
 ## API-endepunkter
 
 ### Notes
@@ -122,3 +147,5 @@ Tabeller som opprettes:
 - Søk/filter for notater
 - Enhetstester for API
 - Deploy (for eksempel Render eller Railway)
+
+Css er lager med bruk av AI

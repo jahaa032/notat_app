@@ -92,6 +92,10 @@ function fetchNotes() {
           <h3 class="item-title">${note.Tittel}</h3>
           <p class="item-body">${note.Body}</p>
 
+          <small>
+            Created: ${new Date(note.CreatedAt + "Z").toLocaleString()}
+          </small>
+          
           <div class="item-actions">
             <button data-id="${note.Id}" class="deleteNoteBtn btn btn-danger">Delete</button>
             <button data-id="${note.Id}" class="updateNoteBtn btn btn-secondary">Edit</button>
